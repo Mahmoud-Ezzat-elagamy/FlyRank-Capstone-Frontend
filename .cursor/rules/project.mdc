@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+
+Use TypeScript everywhere.
+
+Never use any unless absolutely necessary.
+
+Prefer functional components.
+
+Prefer custom hooks.
+
+Use async/await.
+
+Keep components under 200 lines.
+
+Use descriptive names.
+
+Always explain generated code.
+
+Write reusable components.
+
+Use ESLint recommendations.
+
+Use Prettier formatting.
+
+Follow clean architecture.
