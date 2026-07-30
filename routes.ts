@@ -1,3 +1,5 @@
-import { type RouteConfig } from "@react-router/dev/routes";
+import { type RouteConfig, route } from "@react-router/dev/routes";
 
-export default [] satisfies RouteConfig;
+export default [
+  route("profile", "./src/features/profile/UserProfile.tsx"),
+] satisfies RouteConfig;
