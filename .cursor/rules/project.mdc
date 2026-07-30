@@ -1,3 +1,19 @@
 ---
 alwaysApply: true
 ---
+
+Use custom hook to separate the logic from the component
+
+Don't make component sizes look very big and messy
+
+Use useForms hook
+
+Make a labed for each input field and consider the error state
+
+Consider loading state for submitting any form
+
+If the form will edit data add cancel button to discard the changes done
+
+Make button disabled while loading to avoid multi API calls
+
+Consider responsiveness for each component built
