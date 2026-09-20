@@ -31,12 +31,11 @@ export function Navbar() {
             className="flex items-center space-x-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded-lg p-1"
             aria-label="NoteForge Home"
           >
-            <span
-              className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:bg-blue-700 transition-colors"
-              aria-hidden="true"
-            >
-              ✎
-            </span>
+            <img
+              src="/logo.jpg"
+              alt="NoteForge Logo"
+              className="w-9 h-9 rounded-lg object-cover shadow-sm group-hover:scale-105 transition-transform"
+            />
             <div className="flex flex-col">
               <span className="text-xl font-bold tracking-tight text-slate-900 leading-tight">
                 Note<span className="text-blue-600">Forge</span>

@@ -1,12 +1,69 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "NoteForge | Transform Notes into Accessible Study Documents",
+  metadataBase: new URL("https://noteforge.app"),
+  title: {
+    default: "NoteForge | Transform Notes into Accessible Study Documents",
+    template: "%s | NoteForge",
+  },
   description:
     "Convert handwritten notes, pasted text, and documents into structured study guides with accessible tables and diagrams.",
+  applicationName: "NoteForge",
+  keywords: [
+    "NoteForge",
+    "study guide generator",
+    "handwriting to text",
+    "accessible study documents",
+    "Mermaid flowchart notes",
+    "Gemini AI study notes",
+    "WCAG 2.1 AA",
+  ],
+  authors: [{ name: "NoteForge Team" }],
+  creator: "NoteForge",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/logo.jpg", sizes: "180x180", type: "image/jpeg" },
+    ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://noteforge.app",
+    siteName: "NoteForge",
+    title: "NoteForge | Transform Notes into Accessible Study Documents",
+    description:
+      "Convert handwritten notes, pasted text, and documents into structured study guides with accessible tables and diagrams.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "NoteForge - Transform Notes into Accessible Study Documents",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NoteForge | Transform Notes into Accessible Study Documents",
+    description:
+      "Convert handwritten notes, pasted text, and documents into structured study guides with accessible tables and diagrams.",
+    images: ["/og-image.jpg"],
+    creator: "@NoteForge",
+  },
 };
 
 export default function RootLayout({
