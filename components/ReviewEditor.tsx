@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { NoteDoc, Section, UncertainItem } from "@/lib/schema";
 
 interface ReviewEditorProps {
@@ -10,6 +11,7 @@ interface ReviewEditorProps {
 }
 
 export function ReviewEditor({ doc, onChange, onPreview }: ReviewEditorProps) {
+  const shouldReduceMotion = useReducedMotion();
   const [localDoc, setLocalDoc] = useState<NoteDoc>(doc);
 
   const updateTitle = (newTitle: string) => {
@@ -90,13 +92,16 @@ export function ReviewEditor({ doc, onChange, onPreview }: ReviewEditorProps) {
             Make any corrections, add insights, or resolve flagged handwriting readings.
           </p>
         </div>
-        <button
+        <motion.button
           type="button"
+          whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+          transition={{ duration: 0.12 }}
           onClick={onPreview}
           className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
         >
           View Formatted Document →
-        </button>
+        </motion.button>
       </div>
 
       {/* Flagged Readings to double check */}
@@ -129,7 +134,7 @@ export function ReviewEditor({ doc, onChange, onPreview }: ReviewEditorProps) {
                 <button
                   type="button"
                   onClick={() => dismissUncertain(idx)}
-                  className="ml-3 text-slate-500 hover:text-slate-900 font-semibold p-1 focus:outline-none focus:ring-2 focus:ring-blue-600 rounded"
+                  className="ml-3 text-slate-500 hover:text-slate-900 font-semibold p-1 focus:outline-none focus:ring-2 focus:ring-blue-600 rounded min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
                   aria-label={`Dismiss warning for ${item.text}`}
                 >
                   Dismiss
@@ -172,13 +177,16 @@ export function ReviewEditor({ doc, onChange, onPreview }: ReviewEditorProps) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-slate-900">Document Sections</h3>
-          <button
+          <motion.button
             type="button"
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.12 }}
             onClick={addSection}
             className="text-xs font-bold text-blue-600 hover:text-blue-800 border border-blue-200 bg-blue-50 px-3 py-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[36px]"
           >
             + Add New Section
-          </button>
+          </motion.button>
         </div>
 
         {localDoc.sections.map((section, sIdx) => (

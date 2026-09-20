@@ -14,7 +14,12 @@ export interface GenerateInput {
     base64Data: string;
     mimeType: string;
   };
+  pdf?: {
+    base64Data: string;
+    mimeType: string;
+  };
 }
+
 
 const RESPONSE_JSON_SCHEMA = {
   type: "object",
@@ -133,13 +138,23 @@ export async function generateNoteDoc(input: GenerateInput): Promise<DocumentWit
           mimeType: input.image.mimeType,
         },
       });
+    } else if (input.pdf) {
+      contents.push({
+        inlineData: {
+          data: input.pdf.base64Data,
+          mimeType: input.pdf.mimeType || "application/pdf",
+        },
+      });
     }
 
     const fullInstruction = input.text
       ? `${promptText}\n\nUSER NOTES:\n${input.text}`
+      : input.pdf
+      ? `${promptText}\n\nPlease analyze the attached PDF document of notes carefully, synthesizing all pages, text, handwriting, and diagrams.`
       : `${promptText}\n\nPlease analyze the attached image of notes carefully.`;
 
     contents.push(fullInstruction);
+
 
     // Abort controller for timeout
     const controller = new AbortController();

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Sparkles, Menu, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -76,27 +77,29 @@ export function Navbar() {
             WCAG 2.1 AA
           </span>
           <span className="text-slate-300" aria-hidden="true">|</span>
-          <Link
-            href="/generate"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-          >
-            <Sparkles className="w-4 h-4" aria-hidden="true" />
-            <span>Launch Generator</span>
-          </Link>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              href="/generate"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 min-h-[44px]"
+            >
+              <Sparkles className="w-4 h-4" aria-hidden="true" />
+              <span>Launch Generator</span>
+            </Link>
+          </motion.div>
         </div>
 
         {/* Mobile menu button */}
         <div className="flex md:hidden items-center space-x-2">
           <Link
             href="/generate"
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+            className="inline-flex items-center gap-1 px-3 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md min-h-[44px]"
           >
             Launch
           </Link>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+            className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"
           >
@@ -110,32 +113,40 @@ export function Navbar() {
       </div>
 
       {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                aria-current={active ? "page" : undefined}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  active
-                    ? "bg-blue-50 text-blue-700 font-semibold"
-                    : "text-slate-700 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <div className="pt-2 border-t border-slate-100 mt-2 flex items-center justify-between text-xs text-slate-500">
-            <span>WCAG 2.1 AA Compliant</span>
-            <span className="text-emerald-600 font-medium">In-Memory Privacy</span>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg overflow-hidden"
+          >
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`block px-3 py-2.5 rounded-md text-base font-medium min-h-[44px] flex items-center ${
+                    active
+                      ? "bg-blue-50 text-blue-700 font-semibold"
+                      : "text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <div className="pt-2 border-t border-slate-100 mt-2 flex items-center justify-between text-xs text-slate-500">
+              <span>WCAG 2.1 AA Compliant</span>
+              <span className="text-emerald-600 font-medium">In-Memory Privacy</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

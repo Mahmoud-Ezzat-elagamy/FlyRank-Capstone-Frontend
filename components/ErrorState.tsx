@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { ErrorCode, ERROR_MESSAGES, AppErrorPayload } from "@/lib/errors";
 
 interface ErrorStateProps {
@@ -8,6 +11,7 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({ error, onRetry, onManualEntry }: ErrorStateProps) {
+  const shouldReduceMotion = useReducedMotion();
   const { code, message, retryAfter } = error;
 
   const displayMessage = message || ERROR_MESSAGES[code] || "An unexpected error occurred.";
@@ -61,23 +65,29 @@ export function ErrorState({ error, onRetry, onManualEntry }: ErrorStateProps) {
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
             {showRetry && onRetry && (
-              <button
+              <motion.button
                 type="button"
+                whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                transition={{ duration: 0.12 }}
                 onClick={onRetry}
                 className="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center transition-colors shadow-sm"
               >
                 Try Again
-              </button>
+              </motion.button>
             )}
 
             {showManualFallback && (
-              <button
+              <motion.button
                 type="button"
+                whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                transition={{ duration: 0.12 }}
                 onClick={onManualEntry}
                 className="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center transition-colors shadow-sm"
               >
                 Create / Edit Manually in Editor
-              </button>
+              </motion.button>
             )}
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { NoteDoc } from "@/lib/schema";
 import { TableView } from "./TableView";
 import { DiagramView } from "./DiagramView";
@@ -18,10 +19,38 @@ export function DocumentView({
   onEdit,
   onReset,
 }: DocumentViewProps) {
+  const shouldReduceMotion = useReducedMotion();
   const printRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleCopy = async () => {
+    try {
+      const parts: string[] = [`# ${doc.title}`];
+      if (doc.summary) {
+        parts.push(`\n${doc.summary}\n`);
+      }
+      doc.sections.forEach((sec) => {
+        parts.push(`\n## ${sec.heading}\n`);
+        sec.paragraphs?.forEach((p) => parts.push(`${p}\n`));
+        sec.bullets?.forEach((b) => parts.push(`* ${b}`));
+        if (sec.table) {
+          parts.push(`\n[Table: ${sec.table.caption}]`);
+        }
+        if (sec.diagram) {
+          parts.push(`\n[Diagram: ${sec.diagram.title}]`);
+        }
+      });
+
+      await navigator.clipboard.writeText(parts.join("\n"));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      // Fallback if clipboard API unavailable
+    }
   };
 
   return (
@@ -37,29 +66,54 @@ export function DocumentView({
           </span>
         </div>
 
-        <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
-          <button
+        {/* Live region for copy feedback */}
+        <div role="status" aria-live="polite" className="sr-only">
+          {copied ? "Document markdown content copied to clipboard." : ""}
+        </div>
+
+        <div className="flex items-center flex-wrap gap-2.5 w-full sm:w-auto justify-end">
+          <motion.button
             type="button"
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.12 }}
             onClick={onReset}
             className="px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 min-h-[44px] transition-colors"
           >
             Start Over
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.12 }}
+            onClick={handleCopy}
+            aria-label="Copy document text to clipboard"
+            className="px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] inline-flex items-center gap-1.5 transition-colors"
+          >
+            <span>{copied ? "✓ Copied!" : "📋 Copy"}</span>
+          </motion.button>
+          <motion.button
+            type="button"
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.12 }}
             onClick={onEdit}
             className="px-4 py-2 text-sm font-semibold rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] transition-colors"
           >
             Edit Content
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.12 }}
             onClick={handlePrint}
             className="px-5 py-2 text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] flex items-center space-x-1.5 transition-colors"
           >
-            <span>🖨️</span>
+            <span aria-hidden="true">🖨️</span>
             <span>Print / Save as PDF</span>
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -121,7 +175,16 @@ export function DocumentView({
 
         <div className="space-y-10">
           {doc.sections.map((section, idx) => (
-            <section key={idx} className="space-y-4">
+            <motion.section
+              key={idx}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.25,
+                delay: shouldReduceMotion ? 0 : Math.min(idx * 0.05, 0.25),
+              }}
+              className="space-y-4"
+            >
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 border-b border-slate-200 pb-2">
                 {section.heading}
               </h2>
@@ -149,7 +212,7 @@ export function DocumentView({
               {section.table && <TableView table={section.table} />}
 
               {section.diagram && <DiagramView diagram={section.diagram} />}
-            </section>
+            </motion.section>
           ))}
         </div>
       </article>

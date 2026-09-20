@@ -82,6 +82,74 @@ describe("POST /api/generate", () => {
     expect(json.doc.sections.length).toBe(1);
   });
 
+  it("returns 200 and formatted document on summary_important_points mode", async () => {
+    mockGenerateContent.mockResolvedValueOnce({
+      text: () => JSON.stringify(VALID_MOCK_RESPONSE),
+    });
+
+    const req = createRequest({
+      mode: "summary_important_points",
+      text: "Notes about machine learning algorithms and important principles...",
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json.doc.title).toBe("Cell Division Biology");
+  });
+
+  it("returns 200 and formatted document on valid PDF payload", async () => {
+    mockGenerateContent.mockResolvedValueOnce({
+      text: () => JSON.stringify(VALID_MOCK_RESPONSE),
+    });
+
+    const req = createRequest({
+      mode: "summary_important_points",
+      pdf: {
+        base64Data: "JVBERi0xLjQKJcTl8uXr...",
+        mimeType: "application/pdf",
+      },
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json.doc.title).toBe("Cell Division Biology");
+  });
+
+  it("returns 400 for invalid PDF MIME type", async () => {
+    const req = createRequest({
+      mode: "study_guide",
+      pdf: {
+        base64Data: "JVBERi0xLjQKJcTl8uXr...",
+        mimeType: "image/gif",
+      },
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error.code).toBe("BAD_INPUT");
+    expect(json.error.message).toContain("application/pdf");
+  });
+
+  it("returns 413 for oversized PDF payload (> 10 MB)", async () => {
+    const req = createRequest({
+      mode: "study_guide",
+      pdf: {
+        base64Data: "A".repeat(11 * 1024 * 1024),
+        mimeType: "application/pdf",
+      },
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(413);
+    const json = await res.json();
+    expect(json.error.code).toBe("TOO_LARGE");
+  });
+
   it("returns 400 for invalid mode", async () => {
     const req = createRequest({
       mode: "invalid_mode",
@@ -94,7 +162,7 @@ describe("POST /api/generate", () => {
     expect(json.error.code).toBe("BAD_INPUT");
   });
 
-  it("returns 400 when neither text nor image is provided", async () => {
+  it("returns 400 when neither text, image, nor pdf is provided", async () => {
     const req = createRequest({
       mode: "study_guide",
     });
@@ -116,6 +184,7 @@ describe("POST /api/generate", () => {
     const json = await res.json();
     expect(json.error.code).toBe("TOO_LARGE");
   });
+
 
   it("handles Gemini 429 quota exhaustion and returns 429", async () => {
     mockGenerateContent.mockRejectedValue({

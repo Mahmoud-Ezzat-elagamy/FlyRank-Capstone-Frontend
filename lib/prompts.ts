@@ -1,4 +1,4 @@
-export type Mode = "study_guide" | "meeting_summary";
+export type Mode = "study_guide" | "meeting_summary" | "summary_important_points";
 
 export const SYSTEM_PROMPT = `You are NoteForge, an expert educational synthesizer. Your task is to convert raw, messy, or handwritten study notes into a well-structured, accessible, and comprehensive study document following the provided JSON schema exactly.
 
@@ -29,10 +29,20 @@ export const MEETING_SUMMARY_INSTRUCTIONS = `MODE: MEETING SUMMARY
   3. "Discussion Points & Context"
   4. "Open Questions & Next Steps"`;
 
+export const SUMMARY_IMPORTANT_POINTS_INSTRUCTIONS = `MODE: SUMMARY WITH IMPORTANT POINTS
+- Synthesize the input material into a high-level, clear, and comprehensive summary highlighting all important points.
+- Structure the document into clear sections:
+  1. "Executive Summary & Core Overview": Clear, coherent paragraphs explaining the central premise, overarching message, and key context.
+  2. "Important Points & Critical Highlights": A prioritized, detailed bulleted breakdown of the most vital principles, must-know facts, definitions, rules, formulas, dates, data, or critical findings extracted from the notes.
+  3. "Structured Breakdown & Distinctions": In-depth analysis of key subtopics. Use comparison tables where multiple items or categories are contrasted, and flowchart diagrams where sequential processes or workflows are described.
+  4. "Key Takeaways & Actionable Conclusions": A concise checklist or summary of essential conclusions and actionable retention points.`;
+
 export function buildPrompt(mode: Mode, repairErrorMessage?: string): string {
   const modeText =
     mode === "meeting_summary"
       ? MEETING_SUMMARY_INSTRUCTIONS
+      : mode === "summary_important_points"
+      ? SUMMARY_IMPORTANT_POINTS_INSTRUCTIONS
       : STUDY_GUIDE_INSTRUCTIONS;
 
   let prompt = `${SYSTEM_PROMPT}\n\n${modeText}`;
@@ -46,3 +56,4 @@ Please output valid JSON matching the schema strictly, fixing this error.`;
 
   return prompt;
 }
+

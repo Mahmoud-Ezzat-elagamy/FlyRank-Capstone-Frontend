@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { NoteDoc } from "@/lib/schema";
 import { AppErrorPayload } from "@/lib/errors";
 import { InputPanel, GenerateInputPayload } from "@/components/InputPanel";
@@ -25,6 +26,7 @@ const EMPTY_MANUAL_DOC: NoteDoc = {
 };
 
 export default function GeneratorPage() {
+  const shouldReduceMotion = useReducedMotion();
   const [currentView, setCurrentView] = useState<AppView>("input");
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -37,7 +39,13 @@ export default function GeneratorPage() {
 
   const handleGenerate = async (payload: GenerateInputPayload) => {
     setIsLoading(true);
-    setStatusMessage("Synthesizing notes into structured study document...");
+    let startMsg = "Synthesizing notes into structured study guide, please wait...";
+    if (payload.mode === "meeting_summary") {
+      startMsg = "Synthesizing meeting summary with decisions and action items, please wait...";
+    } else if (payload.mode === "summary_important_points") {
+      startMsg = "Synthesizing executive summary and important points, please wait...";
+    }
+    setStatusMessage(startMsg);
     setErrorPayload(null);
     setLastPayload(payload);
 
@@ -60,7 +68,14 @@ export default function GeneratorPage() {
       setGeneratedDoc(data.doc);
       setNotices(data.notices || []);
       setCurrentView("document");
-      setStatusMessage("Study guide generation complete.");
+
+      let doneMsg = "Study guide generation complete.";
+      if (payload.mode === "meeting_summary") {
+        doneMsg = "Meeting summary generation complete.";
+      } else if (payload.mode === "summary_important_points") {
+        doneMsg = "Summary with important points generation complete.";
+      }
+      setStatusMessage(doneMsg);
 
       // Shift focus to document title for screen reader accessibility
       setTimeout(() => {
@@ -103,7 +118,11 @@ export default function GeneratorPage() {
   return (
     <div className="space-y-8">
       {/* Accessible Polite Live Region */}
-      <StatusRegion status={statusMessage} isLoading={isLoading} />
+      <StatusRegion
+        status={statusMessage}
+        isLoading={isLoading}
+        mode={lastPayload?.mode || "study_guide"}
+      />
 
       {/* Main App Header Section (Hidden in Print) */}
       <div className="no-print">
@@ -116,23 +135,35 @@ export default function GeneratorPage() {
             Study Guide Generator
           </h1>
           <p className="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
-            Upload a handwritten photo, paste raw text, or drop in a Word document. NoteForge uses Google Gemini AI to transform your materials into accessible study guides with comparison tables and flowchart diagrams.
+            Upload a handwritten photo, paste raw text, or drop in a Word (.docx) or PDF (.pdf) document. NoteForge uses Google Gemini AI to transform your materials into accessible study guides, meeting summaries, or concise summaries with highlighted important points.
           </p>
         </div>
       </div>
 
       {/* Error Display */}
       {errorPayload && (
-        <ErrorState
-          error={errorPayload}
-          onRetry={handleRetry}
-          onManualEntry={handleManualEntry}
-        />
+        <motion.div
+          initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ErrorState
+            error={errorPayload}
+            onRetry={handleRetry}
+            onManualEntry={handleManualEntry}
+          />
+        </motion.div>
       )}
 
       {/* View 1: Input Panel */}
       {currentView === "input" && (
-        <div className="no-print">
+        <motion.div
+          key="view-input"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="no-print"
+        >
           <InputPanel onGenerate={handleGenerate} isLoading={isLoading} />
 
           <section id="how-it-works" className="mt-12 pt-8 border-t border-slate-200">
@@ -140,11 +171,11 @@ export default function GeneratorPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600">
               <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span className="text-2xl font-bold text-blue-600 block mb-2">1. Input</span>
-                <p>Upload a photo of handwritten notes, paste raw text, or drop in a .docx file. Images are downscaled safely in your browser.</p>
+                <p>Upload a photo of handwritten notes, paste raw text, or drop in a .docx or .pdf file. Images and documents are processed safely.</p>
               </div>
               <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span className="text-2xl font-bold text-blue-600 block mb-2">2. Structure</span>
-                <p>Gemini AI extracts key topics, compiles comparison tables, generates flowchart logic, and flags ambiguous handwriting.</p>
+                <p>Choose Study Guide, Meeting Summary, or Summary with Important Points. Gemini AI extracts key concepts, comparison tables, and diagrams.</p>
               </div>
               <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span className="text-2xl font-bold text-blue-600 block mb-2">3. Review & PDF</span>
@@ -152,30 +183,41 @@ export default function GeneratorPage() {
               </div>
             </div>
           </section>
-        </div>
+        </motion.div>
       )}
 
       {/* View 2: Review & Edit */}
       {currentView === "review" && generatedDoc && (
-        <div className="no-print">
+        <motion.div
+          key="view-review"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="no-print"
+        >
           <ReviewEditor
             doc={generatedDoc}
             onChange={(updated) => setGeneratedDoc(updated)}
             onPreview={() => setCurrentView("document")}
           />
-        </div>
+        </motion.div>
       )}
 
       {/* View 3: Formatted Document & Print Preview */}
       {currentView === "document" && generatedDoc && (
-        <div>
+        <motion.div
+          key="view-document"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <DocumentView
             doc={generatedDoc}
             notices={notices}
             onEdit={() => setCurrentView("review")}
             onReset={handleReset}
           />
-        </div>
+        </motion.div>
       )}
     </div>
   );

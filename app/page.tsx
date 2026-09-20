@@ -25,18 +25,28 @@ import {
   ArrowUpRight,
   Check,
 } from "lucide-react";
+import { MotionFadeIn, MotionScrollReveal, MotionCard } from "@/components/MotionWrapper";
+import { HomeModeShowcase } from "@/components/HomeModeShowcase";
 
 export const metadata = {
   title: "NoteForge | Transform Notes into Accessible Study Documents",
   description:
-    "NoteForge converts handwritten photos, pasted text, and Word files into clean, accessible study documents with sections, comparison tables, and flowchart diagrams.",
+    "NoteForge converts handwritten photos, pasted text, Word files, and PDF documents into clean, accessible study documents with sections, comparison tables, and flowchart diagrams.",
 };
 
 export default function MarketingHomePage() {
   const missionQuote =
-    "Students and professionals keep notes as messy handwriting or plain text, and turning them into something structured takes as long as taking the notes. NoteForge converts handwritten photos, pasted text, or Word files into a clean, accessible study document with sections, tables, and diagrams. It is built for students and anyone who takes notes by hand. It combines vision, structured output, and accessibility in one workflow where AI does real work.";
+    "Students and professionals keep notes as messy handwriting or plain text, and turning them into something structured takes as long as taking the notes. NoteForge converts handwritten photos, pasted text, Word files, or PDF documents into a clean, accessible study document with sections, tables, and diagrams. It is built for students and anyone who takes notes by hand. It combines vision, structured output, and accessibility in one workflow where AI does real work.";
 
   const specialFeatures = [
+    {
+      icon: Sparkles,
+      title: "Conclude & Summarize Items with Key Points",
+      badge: "Executive Takeaways",
+      description:
+        "Instantly distill dense lectures, research papers, and slide decks into high-impact executive summaries, highlighted critical takeaways, must-know formulas, and actionable conclusions.",
+      color: "amber",
+    },
     {
       icon: Eye,
       title: "Multimodal Handwriting Vision",
@@ -93,18 +103,18 @@ export default function MarketingHomePage() {
       title: "Ingest Your Notes Your Way",
       subtitle: "Photo, text, or document",
       description:
-        "Snap a photo of your handwritten notebook, paste raw lecture notes, or drag and drop a Microsoft Word (.docx) file. Large photos are optimized on-device before transmission.",
+        "Snap a photo of your handwritten notebook, paste raw lecture notes, or drag and drop a Microsoft Word (.docx) or PDF (.pdf) document.",
       icon: Smartphone,
-      tags: ["Phone Photo", "Pasted Text", ".docx Word File"],
+      tags: ["Phone Photo", "Pasted Text", ".docx Word File", ".pdf PDF Document"],
     },
     {
       step: "02",
-      title: "Choose Your Study Mode",
-      subtitle: "Tailored to your deadline",
+      title: "Choose Your Document Mode",
+      subtitle: "Tailored to your goal",
       description:
-        "Select Comprehensive Mode for in-depth conceptual mastery, Quick Review Mode for high-yield exam cramming, or Comparison Mode to highlight key contrasts.",
+        "Select Study Guide for comprehensive conceptual mastery, Meeting Summary for structured decisions and action items, or Summary with Important Points for an executive overview with highlighted critical takeaways.",
       icon: SlidersHorizontal,
-      tags: ["Comprehensive", "Quick Review", "Comparison"],
+      tags: ["Study Guide", "Meeting Summary", "Important Points Summary"],
     },
     {
       step: "03",
@@ -163,7 +173,7 @@ export default function MarketingHomePage() {
     {
       question: "What file formats can I upload?",
       answer:
-        "You can upload smartphone photos (JPEG, PNG, WebP), paste raw copied text or lecture transcripts directly, or drag-and-drop Microsoft Word (.docx) documents. Smartphone photos are automatically compressed in your browser to save data and ensure rapid processing.",
+        "You can upload smartphone photos (JPEG, PNG, WebP), paste raw copied text or lecture transcripts directly, or drag-and-drop Microsoft Word (.docx) and PDF (.pdf) documents. Smartphone photos are automatically compressed in your browser to save data and ensure rapid processing.",
     },
     {
       question: "How do the automatic comparison tables and flowcharts work?",
@@ -182,90 +192,95 @@ export default function MarketingHomePage() {
     },
   ];
 
+
   return (
-    <div className="space-y-20 sm:space-y-28 py-4 sm:py-8">
+    <div className="space-y-20 sm:space-y-28 py-4 sm:py-8 overflow-hidden">
       {/* 1. HERO SECTION */}
       <section aria-labelledby="hero-heading" className="relative text-center max-w-4xl mx-auto px-4 sm:px-0 pt-4">
-        {/* Value Prop Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm font-semibold mb-6 shadow-xs">
-          <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" aria-hidden="true" />
-          <span>Multimodal Vision AI &bull; Structured Synthesis &bull; 100% In-Memory Privacy</span>
-        </div>
+        <MotionFadeIn direction="up" delay={0.05}>
+          {/* Value Prop Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm font-semibold mb-6 shadow-xs">
+            <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" aria-hidden="true" />
+            <span>Multimodal Vision AI &bull; Conclude &amp; Summarize Items &bull; 100% In-Memory Privacy</span>
+          </div>
 
-        {/* Primary Heading */}
-        <h1
-          id="hero-heading"
-          className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]"
-        >
-          Turn Messy Notes into{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600">
-            Exam-Ready Study Guides
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Snap a photo of your handwritten notebook, paste raw lecture dumps, or drop Word files. NoteForge automatically synthesizes key concepts into organized outlines, comparison tables, and visual process flowcharts in seconds.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/generate"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl shadow-md hover:shadow-lg transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30"
+          {/* Primary Heading */}
+          <h1
+            id="hero-heading"
+            className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]"
           >
-            <span>Launch Study Guide Generator</span>
-            <ArrowRight className="w-5 h-5" aria-hidden="true" />
-          </Link>
-          <a
-            href="#how-to-use"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100/80 border border-slate-300 rounded-xl shadow-xs transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30"
-          >
-            <Clock className="w-4 h-4 text-slate-500" aria-hidden="true" />
-            <span>See How It Works</span>
-          </a>
-          <a
-            href="#what-makes-it-special"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-blue-700 hover:text-blue-800 bg-blue-50/70 hover:bg-blue-100/70 border border-blue-200/80 rounded-xl transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30"
-          >
-            <span>Why NoteForge?</span>
-          </a>
-        </div>
+            Turn Messy Notes into{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600">
+              Exam-Ready Study Guides
+            </span>
+          </h1>
 
-        {/* Trust Badges */}
-        <div className="mt-10 pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center gap-y-2.5 gap-x-6 text-xs sm:text-sm font-medium text-slate-600">
-          <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-            No Account Required
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Lock className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-            100% In-Memory Privacy
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-            WCAG 2.1 AA Accessible
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Printer className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-            Print &amp; Export to PDF
-          </span>
-        </div>
+          {/* Subtitle */}
+          <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Snap a photo of your handwritten notebook, paste raw lecture dumps, or drop in Word or PDF documents. NoteForge automatically synthesizes key concepts, <span className="font-semibold text-slate-900">concludes and summarizes items into high-yield takeaways</span>, comparison tables, and visual process flowcharts in seconds.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/generate"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl shadow-md hover:shadow-lg transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30 min-h-[44px]"
+            >
+              <span>Launch Study Guide Generator</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </Link>
+            <a
+              href="#how-to-use"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100/80 border border-slate-300 rounded-xl shadow-xs transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30 min-h-[44px]"
+            >
+              <Clock className="w-4 h-4 text-slate-500" aria-hidden="true" />
+              <span>See How It Works</span>
+            </a>
+            <a
+              href="#modes-showcase"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-blue-700 hover:text-blue-800 bg-blue-50/70 hover:bg-blue-100/70 border border-blue-200/80 rounded-xl transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-600/30 min-h-[44px]"
+            >
+              <Sparkles className="w-4 h-4 text-blue-600" aria-hidden="true" />
+              <span>Conclude &amp; Summary Modes</span>
+            </a>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="mt-10 pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center gap-y-2.5 gap-x-6 text-xs sm:text-sm font-medium text-slate-600">
+            <span className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+              No Account Required
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Lock className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+              100% In-Memory Privacy
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+              WCAG 2.1 AA Accessible
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Printer className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+              Print &amp; Export to PDF
+            </span>
+          </div>
+        </MotionFadeIn>
       </section>
 
       {/* 2. PRODUCT TRANSFORMATION SHOWCASE (BEFORE & AFTER MOCKUP) */}
       <section aria-labelledby="showcase-heading" className="max-w-6xl mx-auto px-4 sm:px-0">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-            Instant Transformation
-          </span>
-          <h2 id="showcase-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-3">
-            From Messy Handwriting to Clean Study Masterpiece
-          </h2>
-          <p className="mt-2 text-sm sm:text-base text-slate-600">
-            See how NoteForge deciphers unstructured notebook pages into structured hierarchy, contrast tables, and visual workflows.
-          </p>
-        </div>
+        <MotionScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+              Instant Transformation
+            </span>
+            <h2 id="showcase-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-3">
+              From Messy Handwriting to Clean Study Masterpiece
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-600">
+              See how NoteForge deciphers unstructured notebook pages into structured hierarchy, contrast tables, and visual workflows.
+            </p>
+          </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Before: Raw Scribbled Notes */}
@@ -421,6 +436,18 @@ export default function MarketingHomePage() {
             </div>
           </div>
         </div>
+        </MotionScrollReveal>
+      </section>
+
+      {/* 2.5. SYNTHESIS MODES & CONCLUDE/SUMMARIZE SHOWCASE */}
+      <section
+        id="modes-showcase"
+        aria-label="Synthesis Modes & Conclude Summary Showcase"
+        className="max-w-6xl mx-auto px-4 sm:px-0 scroll-mt-20"
+      >
+        <MotionScrollReveal>
+          <HomeModeShowcase />
+        </MotionScrollReveal>
       </section>
 
       {/* 3. WHAT MAKES NOTEFORGE SPECIAL (KEY DIFFERENTIATORS) */}
@@ -445,32 +472,33 @@ export default function MarketingHomePage() {
           {specialFeatures.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div
-                key={idx}
-                className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 group-hover:bg-blue-600 group-hover:text-white transition-colors flex items-center justify-center">
-                      <Icon className="w-6 h-6" aria-hidden="true" />
+              <MotionScrollReveal key={idx} delay={idx * 0.05} className="h-full">
+                <div
+                  className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between group h-full"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 group-hover:bg-blue-600 group-hover:text-white transition-colors flex items-center justify-center">
+                        <Icon className="w-6 h-6" aria-hidden="true" />
+                      </div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md">
+                        {item.badge}
+                      </span>
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md">
-                      {item.badge}
-                    </span>
+
+                    <h3 className="text-lg font-bold text-slate-900 mb-2.5">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900 mb-2.5">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    {item.description}
-                  </p>
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-blue-600">
+                    <span>Engineered for study fidelity &rarr;</span>
+                  </div>
                 </div>
-
-                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-blue-600">
-                  <span>Engineered for study fidelity &rarr;</span>
-                </div>
-              </div>
+              </MotionScrollReveal>
             );
           })}
         </div>
@@ -498,42 +526,43 @@ export default function MarketingHomePage() {
           {steps.map((st, idx) => {
             const Icon = st.icon;
             return (
-              <div
-                key={idx}
-                className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs relative flex flex-col justify-between hover:border-slate-300 transition-all"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl font-black text-blue-600/30">
-                      {st.step}
-                    </span>
-                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
-                      <Icon className="w-5 h-5" aria-hidden="true" />
+              <MotionScrollReveal key={idx} delay={idx * 0.07} className="h-full">
+                <div
+                  className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs relative flex flex-col justify-between hover:border-slate-300 transition-all h-full"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-3xl font-black text-blue-600/30">
+                        {st.step}
+                      </span>
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
+                        <Icon className="w-5 h-5" aria-hidden="true" />
+                      </div>
                     </div>
+
+                    <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
+                      {st.subtitle}
+                    </span>
+                    <h3 className="text-lg font-bold text-slate-900 mt-1 mb-2.5">
+                      {st.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                      {st.description}
+                    </p>
                   </div>
 
-                  <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
-                    {st.subtitle}
-                  </span>
-                  <h3 className="text-lg font-bold text-slate-900 mt-1 mb-2.5">
-                    {st.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                    {st.description}
-                  </p>
+                  <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-1.5">
+                    {st.tags.map((tg, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="text-[10px] font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md"
+                      >
+                        {tg}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-
-                <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-1.5">
-                  {st.tags.map((tg, tIdx) => (
-                    <span
-                      key={tIdx}
-                      className="text-[10px] font-medium px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md"
-                    >
-                      {tg}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              </MotionScrollReveal>
             );
           })}
         </div>
@@ -619,20 +648,21 @@ export default function MarketingHomePage() {
           {targetAudiences.map((aud, idx) => {
             const Icon = aud.icon;
             return (
-              <div
-                key={idx}
-                className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all"
-              >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-4">
-                  <Icon className="w-5 h-5" aria-hidden="true" />
+              <MotionScrollReveal key={idx} delay={idx * 0.06} className="h-full">
+                <div
+                  className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all h-full"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-bold text-base text-slate-900 mb-2">
+                    {aud.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    {aud.desc}
+                  </p>
                 </div>
-                <h3 className="font-bold text-base text-slate-900 mb-2">
-                  {aud.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {aud.desc}
-                </p>
-              </div>
+              </MotionScrollReveal>
             );
           })}
         </div>

@@ -52,3 +52,23 @@ This document records technical and design decisions made during the development
   3. An accessible, responsive `Navbar` component was created in `components/Navbar.tsx` with active route detection (`aria-current="page"`), keyboard focus rings, mobile dropdown support, and direct links between "Home" and "Study Guide Generator".
 - **Rationale:** Separates marketing/educational content from active tool execution while providing accessible, intuitive navigation across pages without breaking any existing features or tests.
 
+### Decision 10: "Summary with Important Points" Mode & PDF Document Input Support
+- **Context:** Users needed an executive summary format that extracts and highlights critical takeaways, crucial facts, definitions, and important points, as well as the ability to upload and process PDF documents (.pdf) in addition to images and Word files (.docx).
+- **Decision:**
+  1. **Mode Implementation (`summary_important_points`):** Created a dedicated prompt instruction set in `lib/prompts.ts` instructing Gemini to produce a structured document featuring an Executive Summary & Core Overview, a Crucial & Important Points section, structured concept breakdowns with comparison tables/diagrams where relevant, and Actionable Conclusions.
+  2. **UI & Accessibility:** Extended `ModeSelector.tsx` to display all three options cleanly in a responsive grid (`grid-cols-1 md:grid-cols-3`) with accessible radio elements, and updated `InputPanel.tsx` to dynamically adapt the submit button label based on the active mode.
+  3. **PDF Ingestion (`lib/pdf.ts`):** Implemented client-side text extraction using `unpdf` to extract readable text and page counts from `.pdf` documents up to 10 MB, while also encoding base64 payload to enable multimodal visual reading of scanned or handwritten PDFs by Gemini.
+- **Rationale:** Greatly enhances user flexibility by allowing students and professionals to directly ingest syllabus, lecture slide, and research PDFs and generate focused summaries with high-yield points.
+
+### Decision 11: Comprehensive WAI-ARIA & Accessibility (a11y) Across Modes & Uploaders
+- **Context:** Features added recently (Summary with Important Points mode, PDF document ingestion, drag-and-drop file upload, file removal, error handling, status feedback) required strict adherence to WCAG 2.1 AA and WAI-ARIA design patterns.
+- **Decision:**
+  1. **ModeSelector Keyboard & Semantic Architecture:** Implemented accessible `role="radiogroup"` with full arrow key navigation (`ArrowRight`, `ArrowLeft`, `ArrowDown`, `ArrowUp`), roving tab focus, explicit `aria-checked`, and linked `aria-labelledby` / `aria-describedby` referencing mode descriptions.
+  2. **WAI-ARIA Tabs Pattern & Drag-and-Drop:** Built accessible tabbed input with `role="tablist"` / `role="tab"` / `role="tabpanel"`, roving tabindex, and left/right keyboard navigation. Extended dropzones to support drag-and-drop with `aria-dropeffect="copy"` and visual focus/drag rings.
+  3. **Screen Reader Live Regions:** Added polite live regions (`role="status" aria-live="polite" aria-atomic="true"`) to announce file upload events (filename, page count, extracted characters), file removal events, and mode-specific loading/completion messages (`mode="summary_important_points"`, `meeting_summary`, and `study_guide`).
+  4. **WCAG 2.5.5 / 2.5.8 Touch Targets:** Upgraded all remove buttons and alert dismiss buttons to a minimum touch target size of $44 \times 44$px (`min-h-[44px] min-w-[44px]`) with descriptive contextual labels (e.g. `aria-label="Remove uploaded PDF document <filename>"`).
+  5. **WCAG 2.5.3 Label in Name:** Preserved visible button text as accessible names on top action buttons (`Print / Save as PDF`, `Start Over`, `Edit Content`) while adding accessible clipboard copy support with live status feedback.
+- **Rationale:** Ensures complete parity of experience for screen-reader users, keyboard-only navigators, and individuals with visual, motor, or cognitive impairments.
+
+
+

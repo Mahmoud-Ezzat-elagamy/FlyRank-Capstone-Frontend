@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 
 const MAX_TEXT_LENGTH = 30000;
 const MAX_IMAGE_BASE64_LENGTH = 7 * 1024 * 1024; // ~5MB decoded binary, fits within 4.5MB Vercel limit after downscaling
+const MAX_PDF_BASE64_LENGTH = 10 * 1024 * 1024; // ~7.5MB decoded binary
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
@@ -21,20 +22,24 @@ export async function POST(req: NextRequest) {
       throw new AppError("BAD_INPUT", "Malformed JSON request body.", 400);
     }
 
-    const { mode = "study_guide", text, image } = body || {};
+    const { mode = "study_guide", text, image, pdf } = body || {};
 
-    if (mode !== "study_guide" && mode !== "meeting_summary") {
+    if (
+      mode !== "study_guide" &&
+      mode !== "meeting_summary" &&
+      mode !== "summary_important_points"
+    ) {
       throw new AppError(
         "BAD_INPUT",
-        'Invalid mode. Mode must be either "study_guide" or "meeting_summary".',
+        'Invalid mode. Mode must be "study_guide", "meeting_summary", or "summary_important_points".',
         400
       );
     }
 
-    if (!text && !image) {
+    if (!text && !image && !pdf) {
       throw new AppError(
         "BAD_INPUT",
-        "Please provide either notes text or an image of your notes.",
+        "Please provide notes text, an image, or a PDF document of your notes.",
         400
       );
     }
@@ -84,6 +89,37 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if (pdf) {
+      if (
+        !pdf.base64Data ||
+        typeof pdf.base64Data !== "string" ||
+        !pdf.mimeType ||
+        typeof pdf.mimeType !== "string"
+      ) {
+        throw new AppError(
+          "BAD_INPUT",
+          "Invalid PDF payload format. Expected base64Data and mimeType.",
+          400
+        );
+      }
+
+      if (pdf.mimeType !== "application/pdf") {
+        throw new AppError(
+          "BAD_INPUT",
+          `Invalid PDF MIME type "${pdf.mimeType}". Expected "application/pdf".`,
+          400
+        );
+      }
+
+      if (pdf.base64Data.length > MAX_PDF_BASE64_LENGTH) {
+        throw new AppError(
+          "TOO_LARGE",
+          "PDF document exceeds maximum payload limit (10 MB).",
+          413
+        );
+      }
+    }
+
     // 2. Apply rate limiting per IP
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -105,7 +141,9 @@ export async function POST(req: NextRequest) {
       mode: mode as Mode,
       text: text?.trim(),
       image,
+      pdf,
     });
+
 
     const elapsedMs = Date.now() - startTime;
     // Log only status and timing, NEVER request bodies or notes

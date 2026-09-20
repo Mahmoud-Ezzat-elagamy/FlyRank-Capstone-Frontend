@@ -189,4 +189,28 @@ test.describe("NoteForge End-to-End Workflow", () => {
     // Assert editor opened with template
     await expect(page.locator("#doc-title-input")).toHaveValue("New Study Guide");
   });
+
+  test("select Summary with Important Points mode and PDF tab", async ({ page }) => {
+    await page.goto("/generate");
+
+    // Click on PDF tab
+    const pdfTab = page.locator("#tab-pdf");
+    await expect(pdfTab).toBeVisible();
+    await pdfTab.click();
+    await expect(pdfTab).toHaveAttribute("aria-selected", "true");
+
+    // Verify PDF upload panel
+    await expect(page.locator("text=Upload PDF Document")).toBeVisible();
+
+    // Select Summary with Important Points mode
+    const summaryPointsRadio = page.locator('input[value="summary_important_points"]');
+    await summaryPointsRadio.check();
+    await expect(summaryPointsRadio).toBeChecked();
+
+    // Verify submit button label updated
+    await expect(
+      page.locator('button:has-text("Make Summary & Important Points")')
+    ).toBeVisible();
+  });
 });
+
