@@ -43,3 +43,12 @@ This document records technical and design decisions made during the development
 - **Context:** When AI is down, quota is exceeded, or timeout occurs, users should not encounter a dead end.
 - **Decision:** Provide an explicit "Create / Edit Manually in Editor" button in `ErrorState.tsx` and `HomePage` that opens the accessible `ReviewEditor` with a structured starter template.
 - **Rationale:** Satisfies the resilience requirement in `PLAN.md` Section 8.
+
+### Decision 9: Marketing Home Page, Dedicated Generator Route, and Accessible Navbar
+- **Context:** The application required a dedicated marketing/home page presenting project information and the `PROJECTPROOF.md` capstone artifact, while preserving 100% of the existing study guide generator functionality and providing seamless navigation between both pages.
+- **Decision:** 
+  1. Main Home Page (`/`) serves as the comprehensive marketing and project overview page, dynamically reading and displaying `PROJECTPROOF.md` alongside feature breakdowns, architecture highlights, and call-to-actions.
+  2. The existing study guide generator functionality is fully preserved in `app/generate/page.tsx` (with an `/app` alias route), ensuring zero regressions or alterations to existing features.
+  3. An accessible, responsive `Navbar` component was created in `components/Navbar.tsx` with active route detection (`aria-current="page"`), keyboard focus rings, mobile dropdown support, and direct links between "Home" and "Study Guide Generator".
+- **Rationale:** Separates marketing/educational content from active tool execution while providing accessible, intuitive navigation across pages without breaking any existing features or tests.
+

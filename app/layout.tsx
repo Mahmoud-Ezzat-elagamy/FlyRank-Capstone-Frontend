@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
+import { Navbar } from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "NoteForge | Transform Notes into Accessible Study Documents",
@@ -21,42 +23,38 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <header className="no-print border-b border-slate-200 bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <span className="text-2xl font-black tracking-tight text-blue-700" aria-hidden="true">
-                ✎
-              </span>
-              <span className="text-xl font-bold tracking-tight text-slate-900">
-                Note<span className="text-blue-600">Forge</span>
-              </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
-                Study Guide Generator
-              </span>
-            </div>
-            <nav aria-label="Quick links" className="flex items-center space-x-4 text-sm text-slate-600">
-              <a
-                href="#how-it-works"
-                className="hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 rounded px-2 py-1"
-              >
-                How it works
-              </a>
-              <span className="text-slate-300" aria-hidden="true">|</span>
-              <span className="text-xs text-slate-500">WCAG 2.1 AA Compliant</span>
-            </nav>
-          </div>
-        </header>
+
+        {/* Dynamic Accessible Navbar */}
+        <Navbar />
 
         <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </main>
 
-        <footer className="no-print border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <p>© {new Date().getFullYear()} NoteForge. Structured study document synthesis.</p>
-            <p className="text-slate-500">
-              Privacy note: Notes are processed in-memory for document generation and are never stored.
-            </p>
+        <footer className="no-print border-t border-slate-200 bg-white py-8 text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-slate-900 text-sm">Note<span className="text-blue-600">Forge</span></span>
+                <span className="text-slate-300">|</span>
+                <span>Structured study document synthesis</span>
+              </div>
+              <nav aria-label="Footer navigation" className="flex items-center space-x-6 text-sm">
+                <Link href="/" className="hover:text-blue-600 transition-colors">
+                  Home
+                </Link>
+                <Link href="/generate" className="hover:text-blue-600 transition-colors">
+                  Study Guide Generator
+                </Link>
+                <a href="#main-content" className="hover:text-blue-600 transition-colors">
+                  Back to Top ↑
+                </a>
+              </nav>
+            </div>
+            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-400 text-[11px]">
+              <p>© {new Date().getFullYear()} NoteForge. Built for students &amp; professionals taking notes by hand.</p>
+              <p>Privacy: Notes are processed entirely in-memory for document generation and are never stored.</p>
+            </div>
           </div>
         </footer>
       </body>

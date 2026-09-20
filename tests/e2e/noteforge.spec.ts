@@ -51,6 +51,41 @@ const MOCK_NOTE_DOC = {
 };
 
 test.describe("NoteForge End-to-End Workflow", () => {
+  test("marketing home page renders project info, PROJECTPROOF.md, and navbar navigates to generator", async ({
+    page,
+  }) => {
+    // 1. Visit marketing home page
+    await page.goto("/");
+
+    // Check title and accessibility elements
+    await expect(page).toHaveTitle(/NoteForge/i);
+    const skipLink = page.locator('a:has-text("Skip to main content")');
+    await expect(skipLink).toBeAttached();
+
+    // Verify PROJECTPROOF.md content is shown on the marketing page
+    await expect(
+      page.locator("text=Students and professionals keep notes as messy handwriting")
+    ).toBeVisible();
+
+    // Verify navbar has Home and Study Guide Generator links
+    const homeNav = page.locator('header nav a:has-text("Home")');
+    await expect(homeNav).toBeVisible();
+    await expect(homeNav).toHaveAttribute("aria-current", "page");
+
+    const generatorNav = page.locator('header nav a:has-text("Study Guide Generator")');
+    await expect(generatorNav).toBeVisible();
+
+    // Navigate to generator page via navbar
+    await generatorNav.click();
+    await expect(page).toHaveURL(/.*\/generate/);
+
+    // Verify Generator page heading and input panel
+    await expect(
+      page.locator("h1:has-text('Study Guide Generator')")
+    ).toBeVisible();
+    await expect(page.locator("#notes-textarea")).toBeVisible();
+  });
+
   test("paste text -> choose Study Guide -> generate -> edit heading -> verify document", async ({
     page,
   }) => {
@@ -63,26 +98,25 @@ test.describe("NoteForge End-to-End Workflow", () => {
       });
     });
 
-    // 1. Visit homepage
-    await page.goto("/");
+    // Visit generator page
+    await page.goto("/generate");
 
-    // Check title and accessibility elements
-    await expect(page).toHaveTitle(/NoteForge/i);
+    // Check accessibility elements
     const skipLink = page.locator('a:has-text("Skip to main content")');
     await expect(skipLink).toBeAttached();
 
-    // 2. Paste notes into textarea
+    // Paste notes into textarea
     const textarea = page.locator("#notes-textarea");
     await textarea.fill("Lecture notes on thermodynamics, Carnot cycles, and entropy.");
 
-    // 3. Ensure Study Guide radio is selected
+    // Ensure Study Guide radio is selected
     const studyGuideRadio = page.locator('input[value="study_guide"]');
     await expect(studyGuideRadio).toBeChecked();
 
-    // 4. Click generate
+    // Click generate
     await page.click('button:has-text("Transform Into Study Guide")');
 
-    // 5. Assert document renders
+    // Assert document renders
     await expect(
       page.locator("h1:has-text('Thermodynamics and Heat Transfer')")
     ).toBeVisible();
@@ -93,29 +127,29 @@ test.describe("NoteForge End-to-End Workflow", () => {
       page.locator("figure[role='img']")
     ).toBeVisible();
 
-    // 6. Click Edit Content to open ReviewEditor
+    // Click Edit Content to open ReviewEditor
     await page.click('button:has-text("Edit Content")');
     await expect(
       page.locator("h2:has-text('Review & Edit Guide')")
     ).toBeVisible();
 
-    // 7. Verify flagged readings badge is visible with required label
+    // Verify flagged readings badge is visible with required label
     await expect(
       page.locator("h3:has-text('Readings to double-check')")
     ).toBeVisible();
     await expect(page.locator("text=78% efficiency")).toBeVisible();
 
-    // 8. Edit title and heading
+    // Edit title and heading
     const headingInput = page.locator('input[value="1. The Four Laws of Thermodynamics"]');
     await headingInput.fill("1. Fundamental Laws of Thermodynamics");
 
-    // 9. Return to document view
+    // Return to document view
     await page.click('button:has-text("View Formatted Document →")');
     await expect(
       page.locator("h2:has-text('1. Fundamental Laws of Thermodynamics')")
     ).toBeVisible();
 
-    // 10. Assert Print button is present
+    // Assert Print button is present
     const printButton = page.locator('button:has-text("Print / Save as PDF")');
     await expect(printButton).toBeVisible();
   });
@@ -137,7 +171,7 @@ test.describe("NoteForge End-to-End Workflow", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/generate");
 
     const textarea = page.locator("#notes-textarea");
     await textarea.fill("Offline test notes");
